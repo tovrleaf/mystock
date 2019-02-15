@@ -1,0 +1,8 @@
+# Python
+/.venv/
+
+# Editor: vim
+*.swp
+
+# Editor: Visual Studio Code
+/.vscode/
