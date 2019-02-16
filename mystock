@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+import click
+import os
+import sys
+from stockapi.cli.stock import cli as stock_command
+
+@click.group()
+def cli():
+  pass
+
+cli.add_command(stock_command)
+
+if __name__ == '__main__':
+  if os.environ.get('AWS_PROFILE') == None:
+    click.secho('Unable to locate AWS credentials.', fg='red')
+    sys.exit(1)
+  cli()
+
+# vim: set syntax=python
