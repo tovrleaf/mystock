@@ -11,13 +11,9 @@ class StockService(object):
     def insert_share(self, symbol):
         dynamodb = boto3.client('dynamodb')
         dynamodb.put_item(
-            TableName=self.table_name,
-            Item={
-                'symbol': {
-                    'S': symbol
-                }
-            }
-        )
+            TableName=self.table_name, Item={'symbol': {
+                'S': symbol
+            }})
 
     def update_share(self, symbol):
         table = boto3.resource('dynamodb').Table(self.table_name)
@@ -28,7 +24,7 @@ class StockService(object):
         )
         if 'Item' not in response:
             raise StockNotFoundException(
-              'Cannot find a share with symbol %s.' % symbol)
+                'Cannot find a share with symbol %s.' % symbol)
 
         item = response['Item']
 
@@ -66,6 +62,16 @@ class StockService(object):
         item['price'] = f2d(share_price)
         # Osinkotuotto
         item['dividendYield'] = f2d(valuation['dividendYield'])
-        # Tulos/Pääoma
+        # Tulos/Poma
         item['returnOnEquity'] = f2d(
             interimreports['adjustedReturnOnEquity12M'])
+        # P/E
+        item['priceToEarnings'] = f2d(
+            valuation['currentPriceEarningsRatio']['value'])
+        # P/S: market value per share / sales per share
+        item['priceToSales'] = f2d(
+            share_price /
+            ((interimreports['sales12M'])
+             / interimreports['interimReports'][0]['numberOfShares']))
+        # P/B
+        item['priceToBook'] = f2d(valuation['latestPriceToBookRatio'])
