@@ -12,5 +12,5 @@ test -f "cloudformation/${resource_name}.yaml" \
   || (echo 'Given resource does not exist.' && exit 128)
 
 aws cloudformation create-stack \
-  --stack-name "${prefix}${resource_name}" \
+  --stack-name "${prefix}-${resource_name}" \
   --template-body file://./cloudformation/${resource_name}.yaml

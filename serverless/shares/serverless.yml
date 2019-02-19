@@ -5,6 +5,15 @@ provider:
   runtime: python2.7
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
+  environment:
+    DYNAMODB_TABLE: mystock-dynamodb
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
 
 functions:
   shares:
