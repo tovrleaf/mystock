@@ -6,7 +6,7 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
   environment:
-    DYNAMODB_TABLE: mystock-dynamodb
+    DYNAMODB_TABLE: mystock-shares
   iamRoleStatements:
     - Effect: Allow
       Action:
