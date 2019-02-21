@@ -6,7 +6,7 @@ from stockapi.exceptions import StockNotFoundException
 
 class StockService(object):
 
-    table_name = 'mystock-share'
+    table_name = 'mystock-shares'
 
     def insert_share(self, symbol):
         dynamodb = boto3.client('dynamodb')

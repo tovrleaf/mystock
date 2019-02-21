@@ -1,15 +1,46 @@
+import boto3
 import json
 
 
-def handler(event, context):
-    body = {
-        "message": "Returning a list of shares.",
-        "input": event
-    }
+def list_shares(event, context):
+    table = boto3.resource('dynamodb').Table('mystock-shares')
+    response = table.scan()
 
+    ret = {}
+    for i in response['Items']:
+        obj = item_to_body(i)
+        ret[obj['symbol']] = obj
+    return form_response(ret)
+
+
+def get_share(event, context):
+
+    symbol = event['pathParameters']['symbol']
+    table = boto3.resource('dynamodb').Table('mystock-shares')
+    response = table.get_item(
+        Key={
+            'symbol': symbol
+        }
+    )
+
+    if 'Item' not in response:
+        return form_response(
+            'Cannot find a share with symbol %s.' % symbol, 404)
+
+    return form_response(item_to_body(response['Item']))
+
+
+def form_response(payload, status_code=200):
     response = {
-        "statusCode": 200,
-        "body": json.dumps(body)
+        "statusCode": status_code,
+        "body": json.dumps(payload)
     }
-
     return response
+
+
+def item_to_body(row):
+    obj = {}
+    for key, val in row.iteritems():
+        obj[key] = str(val)
+
+    return obj

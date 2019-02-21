@@ -14,4 +14,4 @@ Resources:
       ProvisionedThroughput: 
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
-      TableName: "mystock-share"
+      TableName: "mystock-shares"
