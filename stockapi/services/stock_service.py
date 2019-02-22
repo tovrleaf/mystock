@@ -1,7 +1,7 @@
 import boto3
 from decimal import Decimal
-import requests
 from stockapi.exceptions import StockNotFoundException
+from stockapi.stock.stock_share import ShareApi
 
 
 class StockService(object):
@@ -34,44 +34,21 @@ class StockService(object):
 
     def __update_item_by_name(self, name, item):
 
-        def get_movement_for_share(name):
-            url = ('https://www.kauppalehti.fi/backend/'
-                   'stock;cache=false;endpoint=stock/'
-                   'intraday/graph/{}/LATEST')
-            r = requests.get(url.format(name))
-            r.raise_for_status()
-            return r.json()['movement']
-
-        def get_balance_for_share(name, kind):
-            url = ('https://www.kauppalehti.fi/backend/'
-                   'stock;cache=false;endpoint=balance/'
-                   '{}/{}/5')
-            r = requests.get(url.format(kind, name))
-            r.raise_for_status()
-            return r.json()
-
-        valuation = get_balance_for_share(name, 'valuation')
-        interimreports = get_balance_for_share(name, 'interimreports')
-        share_price = get_movement_for_share(name)[0][1]
-
-        def f2d(v):
-            """Float to Decimal"""
-            return Decimal(str(v))
+        api = ShareApi(name)
 
         # Kurssi
-        item['price'] = f2d(share_price)
+        item['price'] = api.get_price()
         # Osinkotuotto
-        item['dividendYield'] = f2d(valuation['dividendYield'])
+        item['dividendYield'] = api.get_divident_yield()
         # Tulos/Poma
-        item['returnOnEquity'] = f2d(
-            interimreports['adjustedReturnOnEquity12M'])
+        item['returnOnEquity'] = api.get_return_on_equity()
         # P/E
-        item['priceToEarnings'] = f2d(
-            valuation['currentPriceEarningsRatio']['value'])
-        # P/S: market value per share / sales per share
-        item['priceToSales'] = f2d(
-            share_price /
-            ((interimreports['sales12M'])
-             / interimreports['interimReports'][0]['numberOfShares']))
+        item['priceToEarnings'] = api.get_price_to_earnings()
+        # P/S
+        item['priceToSales'] = api.get_price_to_sales()
         # P/B
-        item['priceToBook'] = f2d(valuation['latestPriceToBookRatio'])
+        item['priceToBook'] = api.get_price_to_book()
+
+        for k, v in item.iteritems():
+            if type(v).__name__ == 'float':
+                item[k] = Decimal(str(v))
