@@ -17,6 +17,25 @@ class StockService(object):
 
     def update_share(self, symbol):
         table = boto3.resource('dynamodb').Table(self.table_name)
+        item = self.__get_item_from_table(table, symbol)
+
+        self.__update_item_by_name(symbol, item)
+
+        table.put_item(Item=item)
+
+    def update_inderes(self, symbol, instruction, amount,
+                       target_price, purchase_price):
+        table = boto3.resource('dynamodb').Table(self.table_name)
+        item = self.__get_item_from_table(table, symbol)
+
+        item['inderesInstuction'] = instruction
+        item['inderesAmountOfStocks'] = amount
+        item['inderesTargetPrice'] = Decimal(str(target_price))
+        item['inderesPurchasePrice'] = Decimal(str(purchase_price))
+
+        table.put_item(Item=item)
+
+    def __get_item_from_table(self, table, symbol):
         response = table.get_item(
             Key={
                 'symbol': symbol
@@ -26,11 +45,7 @@ class StockService(object):
             raise StockNotFoundException(
                 'Cannot find a share with symbol %s.' % symbol)
 
-        item = response['Item']
-
-        self.__update_item_by_name(symbol, item)
-
-        table.put_item(Item=item)
+        return response['Item']
 
     def __update_item_by_name(self, name, item):
 

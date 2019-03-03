@@ -9,24 +9,29 @@ class ShareApi(object):
         self.symbol = symbol
 
     def get_price(self):
-        """Kurssi"""
+        """Kurssi
+        Provided by Nasdaq derived API"""
         return self.__get_data('movement')[0][1]
 
     def get_divident_yield(self):
-        """Osinkotuotto"""
+        """Osinkotuotto
+        Provided by Nasdaq derived API"""
         return self.__get_data('valuation')['dividendYield']
 
     def get_return_on_equity(self):
-        """Tulos/Paaoma"""
+        """Tulos/Paaoma
+        Provided by Nasdaq derived API"""
         return self.__get_data('interimreports')['adjustedReturnOnEquity12M']
 
     def get_price_to_earnings(self):
-        """P/E"""
+        """P/E
+        Provided by Nasdaq derived API"""
         return \
             self.__get_data('valuation')['currentPriceEarningsRatio']['value']
 
     def get_price_to_sales(self):
-        """P/S: market value per share / sales per share"""
+        """P/S: market value per share / sales per share
+        Provided by Nasdaq derived API"""
         return (self.get_price() / (
                 self.__get_data('interimreports')['sales12M'] /
                 self.__get_data('interimreports')[
@@ -34,7 +39,8 @@ class ShareApi(object):
                 ))
 
     def get_price_to_book(self):
-        """P/B"""
+        """P/B
+        Provided by Nasdaq derived API"""
         return self.__get_data('valuation')['latestPriceToBookRatio']
 
     def __get_data(self, key):
