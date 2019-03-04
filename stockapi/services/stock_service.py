@@ -23,6 +23,14 @@ class StockService(object):
 
         table.put_item(Item=item)
 
+    def delete_share(self, symbol):
+        table = boto3.resource('dynamodb').Table(self.table_name)
+        table.delete_item(
+            Key={
+                'symbol': symbol
+            }
+        )
+
     def update_inderes(self, symbol, instruction, amount,
                        target_price, purchase_price):
         table = boto3.resource('dynamodb').Table(self.table_name)

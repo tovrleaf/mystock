@@ -19,6 +19,16 @@ def add_new_share(symbol):
     click.echo('Adding %s as new share.' % symbol)
 
 
+@cli.command('delete')
+@click.option('-s', '--symbol',
+              required=True,
+              help='Identifier for share used in Nasdaq')
+def delete_share(symbol):
+    service = StockService()
+    service.delete_share(symbol)
+    click.echo('Deleting %s share.' % symbol)
+
+
 @cli.command('populate')
 @click.option('-s', '--symbol',
               required=True,
