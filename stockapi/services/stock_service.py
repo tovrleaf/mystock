@@ -1,7 +1,7 @@
 import boto3
 from decimal import Decimal
 from stockapi.exceptions import StockNotFoundException
-from stockapi.stock.stock_share import ShareApi
+from stockapi.stock.share_api import ShareApi
 
 
 class StockService(object):
@@ -28,10 +28,10 @@ class StockService(object):
         table = boto3.resource('dynamodb').Table(self.table_name)
         item = self.__get_item_from_table(table, symbol)
 
-        item['inderesInstuction'] = instruction
-        item['inderesAmountOfStocks'] = amount
+        item['inderesInstruction'] = instruction
+        item['amountOfStocks'] = amount
         item['inderesTargetPrice'] = Decimal(str(target_price))
-        item['inderesPurchasePrice'] = Decimal(str(purchase_price))
+        item['purchasePrice'] = Decimal(str(purchase_price))
 
         table.put_item(Item=item)
 
