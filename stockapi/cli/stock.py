@@ -19,11 +19,11 @@ def add_new_share(symbol):
     click.echo('Adding %s as new share.' % symbol)
 
 
-@cli.command('inderes')
+@cli.command('populate')
 @click.option('-s', '--symbol',
               required=True,
               help='Identifier for share used in Nasdaq')
-def set_inderes_values(symbol):
+def populate_share_values(symbol):
     click.echo('Enter values for share %s' % symbol)
     instruction = click.prompt('Ohjeistus - O(sta), L(isaa), V(ahenna), M(yy)')
     valid_instructions = {'o': 'Osta',
