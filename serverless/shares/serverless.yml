@@ -5,6 +5,8 @@ provider:
   runtime: python2.7
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'eu-central-1'}
+  apiKeys:
+    - mystock-apikey
   environment:
     DYNAMODB_TABLE: mystock-shares
   iamRoleStatements:
@@ -23,6 +25,7 @@ functions:
           path: shares
           method: get
           cors: true
+          private: true
   get_share:
     handler: index.get_share
     events:
@@ -30,6 +33,7 @@ functions:
           path: shares/{symbol}
           method: get
           cors: true
+          private: true
 
 plugins:
   - serverless-domain-manager
