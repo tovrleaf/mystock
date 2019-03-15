@@ -1,21 +1,32 @@
 import React, { Component } from 'react';
 import ReactDataGrid from 'react-data-grid';
+import {getStockData} from './lib/stock-api';
 
-const columns = [
-  { key: "id", name: "ID", editable: true },
-  { key: "title", name: "Title", editable: true },
-  { key: "complete", name: "Complete", editable: true }
-];
-
-const rows = [
-  { id: 0, title: "Task 1", complete: 20 },
-  { id: 1, title: "Task 2", complete: 40 },
-  { id: 2, title: "Task 3", complete: 60 }
-];
 
 class App extends Component {
-  state = { rows };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      columns: [],
+      rows: [],
+      isLoading: false
+    };
+  }
+
+  componentDidMount() {
+    this.setState({ isLoading: true });
+
+    getStockData().then(data => {
+      this.setState({
+        columns: data['cols'],
+        rows: data['rows'],
+        isLoading: false
+      })
+    });
+  };
+  
   onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
     this.setState(state => {
       const rows = state.rows.slice();
@@ -29,7 +40,7 @@ class App extends Component {
   render() {
     return (
       <ReactDataGrid
-        columns={columns}
+        columns={this.state.columns}
         rowGetter={i => this.state.rows[i]}
         rowsCount={3}
         onGridRowsUpdated={this.onGridRowsUpdated}

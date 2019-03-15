@@ -31,11 +31,14 @@ def get_share(event, context):
 
 
 def form_response(payload, status_code=200):
-    response = {
-        "statusCode": status_code,
-        "body": json.dumps(payload)
+    return {
+        'statusCode': status_code,
+        'body': json.dumps(payload),
+        'headers': {
+            'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'application/json'
+        }
     }
-    return response
 
 
 def item_to_body(row):

@@ -7,3 +7,6 @@
 
 # Editor: Visual Studio Code
 /.vscode/
+
+# Serverless secrets
+/front/src/conf/
