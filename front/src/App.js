@@ -42,7 +42,7 @@ class App extends Component {
       <ReactDataGrid
         columns={this.state.columns}
         rowGetter={i => this.state.rows[i]}
-        rowsCount={3}
+        rowsCount={this.state.rows.length}
         onGridRowsUpdated={this.onGridRowsUpdated}
         enableCellSelect={true}
       />

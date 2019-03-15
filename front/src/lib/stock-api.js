@@ -6,12 +6,12 @@ export async function getStockData() {
     'a': 'Tuotto %',
     'dividendYield': 'Osinkotuotto',
     'c': 'Potentiaali %',
-    'd': '"Markkina-arvo EUR"',
-    'e': 'Tuotto',
-    'f': 'EUR	"Kasvu  EUR (odotus)"',
-    'g': '"Markkina-arvo EUR (odotus)"',
-    'h': '"Voitto EUR (odotus)"',
-    'i': 'Kasvu % alusta (odotus)"',
+    'd': 'Markkina-arvo EUR',
+    'e': 'Tuotto EUR',
+    'f': 'Kasvu  EUR (odotus)',
+    'g': 'Markkina-arvo EUR (odotus)',
+    'h': 'Voitto EUR (odotus)',
+    'i': 'Kasvu % alusta (odotus)',
     'amountOfStocks': 'Määrä',
     'k': 'Keskikurssi',
     'purchasePrice': 'Hankintahinta',
@@ -49,35 +49,4 @@ export async function getStockData() {
     'cols': columns,
     'rows': retRows
   }
-
-
-
-
-  // const rows = [
-  //   {
-  //     "priceToBook": "4.892",
-  //     "returnOnEquity": "24.172",
-  //     "inderesInstuction": "o",
-  //     "symbol": "VERK",
-  //     "amountOfStocks": "12",
-  //     "inderesTargetPrice": "42.1",
-  //     "dividendYield": "4.853",
-  //     "purchasePrice": "45",
-  //     "priceToSales": "0.413518134728",
-  //     "price": "4.125",
-  //     "priceToEarnings": "19.672"
-  //   },
-  //   {
-  //     "priceToBook": "3.581",
-  //     "returnOnEquity": "18.29",
-  //     "price": "14.2955",
-  //     "dividendYield": "3.278",
-  //     "priceToSales": "1.7869375",
-  //     "symbol": "WRT1V",
-  //     "priceToEarnings": "20.881"
-  //   }
-  // ];
-
-
-
 }
