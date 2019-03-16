@@ -23,6 +23,11 @@ class StockService(object):
 
         table.put_item(Item=item)
 
+    def get_all_shares(self):
+        table = boto3.resource('dynamodb').Table(self.table_name)
+        response = table.scan()
+        return response['Items']
+
     def delete_share(self, symbol):
         table = boto3.resource('dynamodb').Table(self.table_name)
         table.delete_item(

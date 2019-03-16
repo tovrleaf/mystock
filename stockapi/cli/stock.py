@@ -62,10 +62,17 @@ def populate_share_values(symbol):
 
 @cli.command('refresh')
 @click.option('-s', '--symbol',
-              required=True,
               help='Identifier for share used in Nasdaq')
 def update_existing_share(symbol):
     service = StockService()
+    if symbol is None:
+        click.echo('Updating all shares')
+        shares = service.get_all_shares()
+        for s in shares:
+            service.update_share(s['symbol'])
+            click.echo(s['symbol'])
+        return
+
     try:
         service.update_share(symbol)
     except StockNotFoundException, e:

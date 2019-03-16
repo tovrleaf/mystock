@@ -1,11 +1,11 @@
 import requests
+import urllib
 
 
 class ShareApi(object):
 
-    data = {}
-
     def __init__(self, symbol):
+        self.data = {}
         self.symbol = symbol
 
     def get_price(self):
@@ -16,24 +16,41 @@ class ShareApi(object):
     def get_divident_yield(self):
         """Osinkotuotto
         Provided by Nasdaq derived API"""
+        if self.__get_data('valuation') is None:
+            return None
+
         return self.__get_data('valuation')['dividendYield']
 
     def get_return_on_equity(self):
         """Tulos/Paaoma
         Provided by Nasdaq derived API"""
+        if self.__get_data('interimreports') is None:
+            return None
+        if 'adjustedReturnOnEquity12M' not in self.__get_data(
+                'interimreports'):
+            return None
+
         return self.__get_data('interimreports')['adjustedReturnOnEquity12M']
 
     def get_price_to_earnings(self):
         """P/E
         Provided by Nasdaq derived API"""
+        if self.__get_data('valuation') is None:
+            return None
+
         return \
             self.__get_data('valuation')['currentPriceEarningsRatio']['value']
 
     def get_price_to_sales(self):
         """P/S: market value per share / sales per share
         Provided by Nasdaq derived API"""
+        if self.__get_data('interimreports') is None:
+            return None
+        if 'sales12M' not in self.__get_data('interimreports'):
+            return None
+
         return (self.get_price() / (
-                self.__get_data('interimreports')['sales12M'] /
+                1.0 * self.__get_data('interimreports')['sales12M'] /
                 self.__get_data('interimreports')[
                     'interimReports'][0]['numberOfShares']
                 ))
@@ -41,6 +58,9 @@ class ShareApi(object):
     def get_price_to_book(self):
         """P/B
         Provided by Nasdaq derived API"""
+        if self.__get_data('valuation') is None:
+            return None
+
         return self.__get_data('valuation')['latestPriceToBookRatio']
 
     def __get_data(self, key):
@@ -51,7 +71,10 @@ class ShareApi(object):
             self.data[key] = self.__get_movement_for_share(self.symbol)
 
         if key == 'valuation' or key == 'interimreports':
-            self.data[key] = self.__get_balance_for_share(self.symbol, key)
+            try:
+                self.data[key] = self.__get_balance_for_share(self.symbol, key)
+            except requests.exceptions.HTTPError:
+                self.data[key] = None
 
         return self.data[key]
 
@@ -59,7 +82,7 @@ class ShareApi(object):
         url = ('https://www.kauppalehti.fi/backend/'
                'stock;cache=false;endpoint=stock/'
                'intraday/graph/{}/LATEST')
-        r = requests.get(url.format(name))
+        r = requests.get(url.format(urllib.quote_plus(name)))
         r.raise_for_status()
         return r.json()['movement']
 
@@ -67,6 +90,6 @@ class ShareApi(object):
         url = ('https://www.kauppalehti.fi/backend/'
                'stock;cache=false;endpoint=balance/'
                '{}/{}/5')
-        r = requests.get(url.format(kind, name))
+        r = requests.get(url.format(kind, urllib.quote_plus(name)))
         r.raise_for_status()
         return r.json()
