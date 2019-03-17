@@ -19,7 +19,12 @@ class ShareApi(object):
         if self.__get_data('valuation') is None:
             return None
 
-        return self.__get_data('valuation')['dividendYield']
+        data = self.__get_data('valuation')
+        val = data['dividendYield']
+        # most recent field aint available, get previous one
+        if val == 0:
+            val = data['valuationReports'][0]['dividendYieldPercentage']
+        return val
 
     def get_return_on_equity(self):
         """Tulos/Paaoma
@@ -87,9 +92,10 @@ class ShareApi(object):
         return r.json()['movement']
 
     def __get_balance_for_share(self, name, kind):
-        url = ('https://www.kauppalehti.fi/backend/'
-               'stock;cache=false;endpoint=balance/'
-               '{}/{}/5')
-        r = requests.get(url.format(kind, urllib.quote_plus(name)))
+        rawUrl = ('https://www.kauppalehti.fi/backend/'
+                  'stock;cache=false;endpoint=balance/'
+                  '{}/{}/5')
+        url = rawUrl.format(kind, urllib.quote_plus(name))
+        r = requests.get(url)
         r.raise_for_status()
         return r.json()
