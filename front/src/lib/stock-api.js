@@ -2,7 +2,7 @@ var config = require('../conf/api-secrets.json');
 export async function getStockData() {
   var header = {
     'symbol': 'Nimi',
-    'inderesInstuction': 'Suositus',
+    'inderesInstruction': 'Suositus',
     'a': 'Tuotto %',
     'dividendYield': 'Osinkotuotto',
     'c': 'Potentiaali %',
