@@ -1,4 +1,5 @@
 import click
+import re
 import sys
 from stockapi.exceptions import StockNotFoundException
 from stockapi.services.stock_service import StockService
@@ -35,17 +36,25 @@ def delete_share(symbol):
               help='Identifier for share used in Nasdaq')
 def populate_share_values(symbol):
     click.echo('Enter values for share %s' % symbol)
-    instruction = click.prompt('Ohjeistus - O(sta), L(isaa), V(ahenna), M(yy)')
+    instruction = click.prompt(
+        'Ohjeistus - O(sta), L(isaa), V(ahenna), M(yy), -')
     valid_instructions = {'o': 'Osta',
-                          'l': 'Lisaa', 'v': 'Vahenna', 'm': 'Myy'}
+                          'l': 'Lisaa',
+                          'v': 'Vahenna', 'm': 'Myy', '-': 'Ei seurannassa'}
     instruction = instruction.lower()
     if instruction not in valid_instructions.keys():
         click.secho('Instruction must be one of %s.' %
-                    ', '.join(valid_instructions.keys()))
+                    ', '.join(valid_instructions.keys()), fg='red')
         sys.exit(128)
 
     amount = click.prompt('Maara', type=int)
-    target_price = click.prompt('Tavoitehinta', type=float)
+
+    target_price = click.prompt('Tavoitehinta')
+    match = re.match(r'^(\d+(\.\d+)?|-)$', target_price)
+    if not match:
+        click.secho('Target price needs to be numberic or -', fg='red')
+        sys.exit(128)
+
     purchase_price = click.prompt('Hankintahinta', type=float)
 
     service = StockService()

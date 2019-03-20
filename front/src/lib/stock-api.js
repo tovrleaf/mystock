@@ -30,17 +30,12 @@ export async function getStockData() {
     return { key: k, name: header[k] };
   });
 
-  var url = config.mystock_apiendpoint + '/api/shares';
-  async function getData() {
-    var response = await fetch(url, {
-      headers: new Headers({
-        'x-api-key': config.mystock_apikey
-      }) 
-    });
-    return response.json();
+  var rows;
+  if ('#local' === window.location.hash) {
+    rows = await fetchFromLocalFixture();
+  } else {
+    rows = await fetchFromApi();
   }
-
-  const rows = await getData();
   var retRows = [];
   for (var k in rows) {
     retRows.push(rows[k]);
@@ -49,4 +44,21 @@ export async function getStockData() {
     'cols': columns,
     'rows': retRows
   }
+}
+
+async function fetchFromApi() {
+  var url = config.mystock_apiendpoint + '/api/shares';
+  var response = await fetch(url, {
+    headers: new Headers({
+      'x-api-key': config.mystock_apikey
+    }) 
+  });
+  return response.json();
+}
+
+async function fetchFromLocalFixture() {
+  if ('localhost' !== window.location.hostname) {
+    return [];
+  }
+  return require('../data/fixture.json');
 }

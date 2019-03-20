@@ -43,7 +43,10 @@ class StockService(object):
 
         item['inderesInstruction'] = instruction
         item['amountOfStocks'] = amount
-        item['inderesTargetPrice'] = Decimal(str(target_price))
+        if target_price == '-':
+            item['inderesTargetPrice'] = '-'
+        else:
+            item['inderesTargetPrice'] = Decimal(str(target_price))
         item['purchasePrice'] = Decimal(str(purchase_price))
 
         table.put_item(Item=item)
