@@ -43,8 +43,13 @@ class ShareApi(object):
         if self.__get_data('valuation') is None:
             return None
 
-        return \
-            self.__get_data('valuation')['currentPriceEarningsRatio']['value']
+        data = self.__get_data('valuation')
+
+        val = data['currentPriceEarningsRatio']['value']
+        # most recent field aint available, get previous one
+        if val == 0:
+            val = data['valuationReports'][0]['priceEarningsRatio']
+        return val
 
     def get_price_to_sales(self):
         """P/S: market value per share / sales per share
