@@ -22,8 +22,16 @@ class ShareApi(object):
         data = self.__get_data('valuation')
         val = data['dividendYield']
         # most recent field aint available, get previous one
-        if val == 0:
+        if val == 0 and 'dividentYields' in data and \
+                len(data['dividentYields']) > 0 \
+                and 'dividendYieldPercentage' in data['dividentYields'][0]:
+            val = data['dividendYields'][0]['dividendYieldPercentage']
+        if val == 0 \
+                and 'dividendYieldPercentage' in data['valuationReports'][0]:
             val = data['valuationReports'][0]['dividendYieldPercentage']
+
+        if val == 0:
+            val = None
         return val
 
     def get_return_on_equity(self):
@@ -47,8 +55,11 @@ class ShareApi(object):
 
         val = data['currentPriceEarningsRatio']['value']
         # most recent field aint available, get previous one
-        if val == 0:
+        if val == 0 and 'priceEarningsRatio' in data['valuationReports'][0]:
             val = data['valuationReports'][0]['priceEarningsRatio']
+
+        if val == 0:
+            val = None
         return val
 
     def get_price_to_sales(self):
@@ -71,7 +82,12 @@ class ShareApi(object):
         if self.__get_data('valuation') is None:
             return None
 
-        return self.__get_data('valuation')['latestPriceToBookRatio']
+        data = self.__get_data('valuation')
+        val = data['latestPriceToBookRatio']
+        # most recent field aint available, get previous one
+        if val == 0:
+            val = data['valuationReports'][0]['priceToBookRatio']
+        return val
 
     def __get_data(self, key):
         if key in self.data:

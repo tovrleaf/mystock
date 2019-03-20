@@ -80,3 +80,5 @@ class StockService(object):
         for k, v in item.iteritems():
             if type(v).__name__ == 'float':
                 item[k] = Decimal(str(v))
+            if type(v).__name__ == 'NoneType':
+                item[k] = '-'
