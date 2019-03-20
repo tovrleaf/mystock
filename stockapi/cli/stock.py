@@ -55,7 +55,7 @@ def populate_share_values(symbol):
         click.secho('Target price needs to be numberic or -', fg='red')
         sys.exit(128)
 
-    purchase_price = click.prompt('Hankintahinta', type=float)
+    purchase_price = click.prompt('Hankinta-arvo', type=float)
 
     service = StockService()
     try:
