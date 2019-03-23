@@ -3,9 +3,9 @@ export async function getStockData() {
   var header = {
     'symbol': 'Nimi',
     'inderesInstruction': 'Suositus',
-    'a': 'Tuotto %',
+    'yield': 'Tuotto %',
     'dividendYield': 'Osinkotuotto',
-    'c': 'Potentiaali %',
+    'potential': 'Potentiaali %',
     'd': 'Markkina-arvo EUR',
     'e': 'Tuotto EUR',
     'f': 'Kasvu  EUR (odotus)',
@@ -21,7 +21,7 @@ export async function getStockData() {
     'priceToEarnings': 'P/E',
     'priceToSales': 'P/S',
     'priceToBook': 'P/B',
-    's': 'Markkina-arvo paikallinen',
+    'marketPriceLocal': 'Markkina-arvo paikallinen',
     't': 'Hankintahinta EUR',
     'u': 'Osuus osakesalkusta'
   };
@@ -38,7 +38,7 @@ export async function getStockData() {
   }
   var retRows = [];
   for (var k in rows) {
-    retRows.push(rows[k]);
+    retRows.push(addFrontendFields(rows[k]));
   }
   return {
     'cols': columns,
@@ -61,4 +61,19 @@ async function fetchFromLocalFixture() {
     return [];
   }
   return require('../data/fixture.json');
+}
+
+function addFrontendFields(row) {
+  var re = {'m': 'Myy', 'o': 'Osta', 'v': 'Vähennä', 'l': 'Lisää'};
+  row['inderesInstruction'] = re[row['inderesInstruction']] || '-';
+
+  row['marketPriceLocal'] = row['amountOfStocks'] * row['price'];
+
+  row['potential'] = (row['inderesTargetPrice'] / row['price'] - 1) * 100;
+  if (isNaN(row['potential'])) {
+    row['potential'] = '-';
+  }
+
+  row['yield'] = (row['marketPriceLocal'] / row['purchasePrice'] - 1) * 100;
+  return row;
 }
