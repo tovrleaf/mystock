@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Resources:
-  playerDynamoDBTable:
+  sharesDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
@@ -15,3 +15,18 @@ Resources:
         ReadCapacityUnits: "5"
         WriteCapacityUnits: "5"
       TableName: "mystock-shares"
+  currenciesDynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        -
+          AttributeName: "currency"
+          AttributeType: "S"
+      KeySchema:
+        -
+          AttributeName: "currency"
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: "mystock-currencies"

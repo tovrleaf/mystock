@@ -11,6 +11,11 @@ prefix='mystock'
 test -f "cloudformation/${resource_name}.yaml" \
   || (echo 'Given resource does not exist.' && exit 128)
 
-aws cloudformation create-stack \
+stack_name="${prefix}-${resource_name}"
+
+cmd='update-stack'
+aws cloudformation describe-stacks --stack-name "${stack_name}" &>/dev/null || cmd='create-stack'
+
+aws cloudformation ${cmd} \
   --stack-name "${prefix}-${resource_name}" \
   --template-body file://./cloudformation/${resource_name}.yaml
