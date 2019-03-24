@@ -17,6 +17,7 @@ Resources:
       TableName: "mystock-shares"
   currenciesDynamoDBTable:
     Type: AWS::DynamoDB::Table
+    DependsOn: "sharesDynamoDBTable"
     Properties:
       AttributeDefinitions:
         -
