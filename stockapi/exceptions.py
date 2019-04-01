@@ -5,3 +5,8 @@ class StockException(Exception):
 class StockNotFoundException(StockException):
     """Error raised when stock is not found."""
     pass
+
+
+class CurrencyNotFoundException(StockException):
+    """Error raised when currency is not found."""
+    pass

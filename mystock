@@ -4,12 +4,14 @@ import click
 import os
 import sys
 from stockapi.cli.stock import cli as stock_command
+from stockapi.cli.currency import cli as currency_command
 
 @click.group()
 def cli():
   pass
 
 cli.add_command(stock_command)
+cli.add_command(currency_command)
 
 if __name__ == '__main__':
   if os.environ.get('AWS_PROFILE') == None:
