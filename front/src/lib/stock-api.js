@@ -37,8 +37,9 @@ export async function getStockData() {
     rows = await fetchFromApi();
   }
   var retRows = [];
-  for (var k in rows) {
-    retRows.push(addFrontendFields(rows[k]));
+  var shares = rows['shares'];
+  for (var k in shares) {
+    retRows.push(addFrontendFields(shares[k]));
   }
   return {
     'cols': columns,

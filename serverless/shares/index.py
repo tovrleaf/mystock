@@ -33,7 +33,7 @@ def get_share(event, context):
 def form_response(payload, status_code=200):
     return {
         'statusCode': status_code,
-        'body': json.dumps(payload),
+        'body': json.dumps({'shares': payload}),
         'headers': {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json'
