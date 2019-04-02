@@ -8,14 +8,17 @@ provider:
   apiKeys:
     - mystock-apikey
   environment:
-    DYNAMODB_TABLE: mystock-shares
+    DYNAMODB_TABLE_SHARES: mystock-shares
+    DYNAMODB_TABLE_CURRENCIES: mystock-currencies
   iamRoleStatements:
     - Effect: Allow
       Action:
         - dynamodb:Query
         - dynamodb:Scan
         - dynamodb:GetItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+      Resource:
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_SHARES}"
+        - "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_CURRENCIES}"
 
 functions:
   list_shares:

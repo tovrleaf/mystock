@@ -3,13 +3,19 @@ import json
 
 
 def list_shares(event, context):
-    table = boto3.resource('dynamodb').Table('mystock-shares')
-    response = table.scan()
+    ret = {'shares': {}, 'currencies': {}}
+    ids = {'shares': 'symbol', 'currencies': 'currency'}
 
-    ret = {}
-    for i in response['Items']:
-        obj = item_to_body(i)
-        ret[obj['symbol']] = obj
+    for key in ret.keys():
+        name = "mystock-%s" % key
+
+        table = boto3.resource('dynamodb').Table(name)
+        response = table.scan()
+
+        for i in response['Items']:
+            obj = item_to_body(i)
+            ret[key][obj[ids[key]]] = obj
+
     return form_response(ret)
 
 
@@ -33,7 +39,7 @@ def get_share(event, context):
 def form_response(payload, status_code=200):
     return {
         'statusCode': status_code,
-        'body': json.dumps({'shares': payload}),
+        'body': json.dumps(payload),
         'headers': {
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json'
