@@ -6,11 +6,11 @@ export async function getStockData() {
     'yield': 'Tuotto %',
     'dividendYield': 'Osinkotuotto',
     'potential': 'Potentiaali %',
-    'd': 'Markkina-arvo EUR',
-    'e': 'Tuotto EUR',
-    'f': 'Kasvu  EUR (odotus)',
-    'g': 'Markkina-arvo EUR (odotus)',
-    'h': 'Voitto EUR (odotus)',
+    'marketPrice': 'Markkina-arvo EUR',
+    'yieldEur': 'Tuotto EUR',
+    'expectedGrowthEur': 'Kasvu  EUR (odotus)',
+    'expectedMarketPriceEur': 'Markkina-arvo EUR (odotus)',
+    'expectedWinEur': 'Voitto EUR (odotus)',
     'i': 'Kasvu % alusta (odotus)',
     'amountOfStocks': 'Määrä',
     'k': 'Keskikurssi',
@@ -39,7 +39,7 @@ export async function getStockData() {
   var retRows = [];
   var shares = rows['shares'];
   for (var k in shares) {
-    retRows.push(addFrontendFields(shares[k]));
+    retRows.push(addFrontendFields(shares[k], rows['currencies']));
   }
   return {
     'cols': columns,
@@ -64,17 +64,46 @@ async function fetchFromLocalFixture() {
   return require('../data/fixture.json');
 }
 
-function addFrontendFields(row) {
+function addFrontendFields(row, currencies) {
   var re = {'m': 'Myy', 'o': 'Osta', 'v': 'Vähennä', 'l': 'Lisää'};
   row['inderesInstruction'] = re[row['inderesInstruction']] || '-';
 
   row['marketPriceLocal'] = row['amountOfStocks'] * row['price'];
+  var cur = 'EUR';
+  if (row['currency']) {
+    cur = row['currency'];
+  }
+  row['marketPrice'] = row['marketPriceLocal'] / currencies[cur]['rate'];
+
+  row['yieldEur'] = (row['marketPriceLocal'] - row['purchasePrice']) / currencies[cur]['rate'];
 
   row['potential'] = (row['inderesTargetPrice'] / row['price'] - 1) * 100;
   if (isNaN(row['potential'])) {
     row['potential'] = '-';
   }
 
+  row['expectedGrowthEur'] = row['marketPrice'] * row['potential'] / 100;
+  if (isNaN(row['expectedGrowthEur'])) {
+    row['expectedGrowthEur'] = '-';
+  }
+
+  row['expectedMarketPriceEur'] = row['marketPrice'] + row['expectedGrowthEur'];
+  if (isNaN(row['expectedMarketPriceEur'])) {
+    row['expectedMarketPriceEur'] = '-';
+  }
+
+  row['expectedWinEur'] = row['expectedMarketPriceEur'] - (row['purchasePrice'] / currencies[cur]['rate']);
+  if (isNaN(row['expectedWinEur'])) {
+    row['expectedWinEur'] = '-';
+  }
+
   row['yield'] = (row['marketPriceLocal'] / row['purchasePrice'] - 1) * 100;
+
+  for (var k in row) {
+    if (typeof row[k] == 'number') {
+      row[k] = Number((row[k]).toFixed(2));
+    }
+  }
+
   return row;
 }
