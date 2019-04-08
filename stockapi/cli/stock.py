@@ -35,9 +35,18 @@ def delete_share(symbol):
               required=True,
               help='Identifier for share used in Nasdaq')
 def populate_share_values(symbol):
+
+    service = StockService()
+    try:
+        share = service.get_share(symbol)
+    except StockNotFoundException, e:
+        click.secho(str(e), fg='red')
+        sys.exit(128)
+
     click.echo('Enter values for share %s' % symbol)
     instruction = click.prompt(
-        'Ohjeistus - O(sta), L(isaa), V(ahenna), M(yy), -')
+        'Ohjeistus - O(sta), L(isaa), V(ahenna), M(yy), -',
+        default=share['inderesInstruction'])
     valid_instructions = {'o': 'Osta',
                           'l': 'Lisaa',
                           'v': 'Vahenna', 'm': 'Myy', '-': 'Ei seurannassa'}
@@ -47,23 +56,23 @@ def populate_share_values(symbol):
                     ', '.join(valid_instructions.keys()), fg='red')
         sys.exit(128)
 
-    amount = click.prompt('Maara', type=int)
+    amount = click.prompt('Maara', type=int, default=share['amountOfStocks'])
 
-    target_price = click.prompt('Tavoitehinta')
+    target_price = click.prompt('Tavoitehinta',
+                                default=share['inderesTargetPrice'])
     match = re.match(r'^(\d+(\.\d+)?|-)$', target_price)
     if not match:
         click.secho('Target price needs to be numberic or -', fg='red')
         sys.exit(128)
 
-    purchase_price = click.prompt('Hankinta-arvo', type=float)
+    purchase_price = click.prompt('Hankinta-arvo',
+                                  type=float,
+                                  default=share['purchasePrice'])
 
-    service = StockService()
-    try:
-        service.update_inderes(symbol, instruction, amount,
-                               target_price, purchase_price)
-    except StockNotFoundException, e:
-        click.secho(str(e), fg='red')
-        sys.exit(128)
+    currency = click.prompt('Valuutta', default='EUR')
+
+    service.update_inderes(symbol, instruction, amount,
+                           target_price, purchase_price, currency)
 
     click.echo('Updating %s as existing share with Inderes information.' %
                symbol)

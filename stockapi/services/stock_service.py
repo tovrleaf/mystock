@@ -8,6 +8,11 @@ class StockService(object):
 
     table_name = 'mystock-shares'
 
+    def get_share(self, symbol):
+        table = boto3.resource('dynamodb').Table(self.table_name)
+        item = self.__get_item_from_table(table, symbol)
+        return item
+
     def insert_share(self, symbol):
         dynamodb = boto3.client('dynamodb')
         dynamodb.put_item(
@@ -37,7 +42,7 @@ class StockService(object):
         )
 
     def update_inderes(self, symbol, instruction, amount,
-                       target_price, purchase_price):
+                       target_price, purchase_price, currency):
         table = boto3.resource('dynamodb').Table(self.table_name)
         item = self.__get_item_from_table(table, symbol)
 
@@ -48,6 +53,7 @@ class StockService(object):
         else:
             item['inderesTargetPrice'] = Decimal(str(target_price))
         item['purchasePrice'] = Decimal(str(purchase_price))
+        item['currency'] = currency
 
         table.put_item(Item=item)
 
