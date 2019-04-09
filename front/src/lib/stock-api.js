@@ -6,14 +6,14 @@ export async function getStockData() {
     'yield': 'Tuotto %',
     'dividendYield': 'Osinkotuotto',
     'potential': 'Potentiaali %',
-    'marketPrice': 'Markkina-arvo EUR',
+    'marketPriceEur': 'Markkina-arvo EUR',
     'yieldEur': 'Tuotto EUR',
     'expectedGrowthEur': 'Kasvu  EUR (odotus)',
     'expectedMarketPriceEur': 'Markkina-arvo EUR (odotus)',
     'expectedWinEur': 'Voitto EUR (odotus)',
-    'i': 'Kasvu % alusta (odotus)',
+    'expectedGrowthFromStart': 'Kasvu % alusta (odotus)',
     'amountOfStocks': 'Määrä',
-    'k': 'Keskikurssi',
+    'middleRate': 'Keskikurssi',
     'purchasePrice': 'Hankintahinta',
     'price': 'Kurssi',
     'inderesTargetPrice': 'Inderes tavoitehinta',
@@ -22,8 +22,8 @@ export async function getStockData() {
     'priceToSales': 'P/S',
     'priceToBook': 'P/B',
     'marketPriceLocal': 'Markkina-arvo paikallinen',
-    't': 'Hankintahinta EUR',
-    'u': 'Osuus osakesalkusta'
+    'purchasePriceEur': 'Hankintahinta EUR',
+    'percentageOfPortfolio': 'Osuus osakesalkusta'
   };
 
   const columns = Object.keys(header).map((k) => {
@@ -41,6 +41,20 @@ export async function getStockData() {
   for (var k in shares) {
     retRows.push(addFrontendFields(shares[k], rows['currencies']));
   }
+
+  var totalSums = []
+  for (var j in shares) {
+    totalSums.push(shares[j]['marketPriceEur']);
+  }
+
+  var total = totalSums.reduce(function(accumulator, currentValue) {
+    return Number(accumulator) + Number(currentValue);
+  });
+
+  for (var l in shares) {
+    shares[l]['percentageOfPortfolio'] = Number(shares[l]['marketPriceEur'] / total * 100).toFixed(2);
+  }
+
   return {
     'cols': columns,
     'rows': retRows
@@ -73,7 +87,7 @@ function addFrontendFields(row, currencies) {
   if (row['currency']) {
     cur = row['currency'];
   }
-  row['marketPrice'] = row['marketPriceLocal'] / currencies[cur]['rate'];
+  row['marketPriceEur'] = row['marketPriceLocal'] / currencies[cur]['rate'];
 
   row['yieldEur'] = (row['marketPriceLocal'] - row['purchasePrice']) / currencies[cur]['rate'];
 
@@ -82,12 +96,12 @@ function addFrontendFields(row, currencies) {
     row['potential'] = '-';
   }
 
-  row['expectedGrowthEur'] = row['marketPrice'] * row['potential'] / 100;
+  row['expectedGrowthEur'] = row['marketPriceEur'] * row['potential'] / 100;
   if (isNaN(row['expectedGrowthEur'])) {
     row['expectedGrowthEur'] = '-';
   }
 
-  row['expectedMarketPriceEur'] = row['marketPrice'] + row['expectedGrowthEur'];
+  row['expectedMarketPriceEur'] = row['marketPriceEur'] + row['expectedGrowthEur'];
   if (isNaN(row['expectedMarketPriceEur'])) {
     row['expectedMarketPriceEur'] = '-';
   }
@@ -99,9 +113,17 @@ function addFrontendFields(row, currencies) {
 
   row['yield'] = (row['marketPriceLocal'] / row['purchasePrice'] - 1) * 100;
 
+  row['expectedGrowthFromStart'] = (row['expectedMarketPriceEur'] - row['purchasePrice']) / 10;
+  if (isNaN(row['expectedGrowthFromStart'])) {
+    row['expectedGrowthFromStart'] = '-';
+  }
+
+  row['middleRate'] = row['purchasePrice'] / row['amountOfStocks'];
+  row['purchasePriceEur'] = row['marketPriceLocal'] / currencies[cur]['rate'];
+
   for (var k in row) {
-    if (typeof row[k] == 'number') {
-      row[k] = Number((row[k]).toFixed(2));
+    if (! isNaN(row[k])) {
+      row[k] = Number(row[k]).toFixed(2);
     }
   }
 
