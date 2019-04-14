@@ -42,18 +42,7 @@ export async function getStockData() {
     retRows.push(addFrontendFields(shares[k], rows['currencies']));
   }
 
-  var totalSums = []
-  for (var j in shares) {
-    totalSums.push(shares[j]['marketPriceEur']);
-  }
-
-  var total = totalSums.reduce(function(accumulator, currentValue) {
-    return Number(accumulator) + Number(currentValue);
-  });
-
-  for (var l in shares) {
-    shares[l]['percentageOfPortfolio'] = Number(shares[l]['marketPriceEur'] / total * 100).toFixed(2);
-  }
+  shares = addPercentageOfEachShareInPortfolio(shares);
 
   return {
     'cols': columns,
@@ -128,4 +117,22 @@ function addFrontendFields(row, currencies) {
   }
 
   return row;
+}
+
+function addPercentageOfEachShareInPortfolio(shares) {
+  var totalSums = []
+  for (var j in shares) {
+    totalSums.push(shares[j]['marketPriceEur']);
+  }
+
+  var total = totalSums.reduce(function(accumulator, currentValue) {
+    return Number(accumulator) + Number(currentValue);
+  });
+
+  // add total percentage of portfolio
+  for (var l in shares) {
+    shares[l]['percentageOfPortfolio'] = Number(shares[l]['marketPriceEur'] / total * 100).toFixed(2);
+  }
+
+  return shares;
 }

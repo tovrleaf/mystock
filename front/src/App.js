@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ProgressBar } from 'react-bootstrap';
 import ReactDataGrid from 'react-data-grid';
 import {getStockData} from './lib/stock-api';
 
@@ -18,9 +19,21 @@ class App extends Component {
   componentDidMount() {
     this.setState({ isLoading: true });
 
+    var ProgressBarFormatter = ({ value }) => {
+      return <ProgressBar now={value} label={`${value}%`} />;
+    };
+
     getStockData().then(data => {
+
+      var cols = data['cols'].map((v) => {
+        if (v['key'] === 'percentageOfPortfolio') {
+          v['formatter'] = ProgressBarFormatter;
+        }
+        return v;
+      });
+
       this.setState({
-        columns: data['cols'],
+        columns: cols,
         rows: data['rows'],
         isLoading: false
       })
