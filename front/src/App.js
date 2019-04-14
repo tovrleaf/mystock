@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import ReactDataGrid from 'react-data-grid';
 import {getStockData} from './lib/stock-api';
+const keys = require('./lib/fields');
 
 
 class App extends Component {
@@ -26,7 +27,7 @@ class App extends Component {
     getStockData().then(data => {
 
       var cols = data['cols'].map((v) => {
-        if (v['key'] === 'percentageOfPortfolio') {
+        if (v['key'] === keys.PERCENTAGE_OF_PORTFOLIO) {
           v['formatter'] = ProgressBarFormatter;
         }
         return v;
