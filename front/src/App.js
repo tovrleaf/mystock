@@ -27,11 +27,21 @@ class App extends Component {
     getStockData().then(data => {
 
       var cols = data['cols'].map((v) => {
+        if (v['key'] === keys.SYMBOL) {
+          v['frozen'] = true;
+        }
         if (v['key'] === keys.PERCENTAGE_OF_PORTFOLIO) {
           v['formatter'] = ProgressBarFormatter;
         }
         return v;
       });
+
+      const defaultColumnProperties = {
+        resizable: true,
+        width: 70
+      };
+
+      cols = cols.map(c => ({ ...c, ...defaultColumnProperties }));
 
       this.setState({
         columns: cols,
