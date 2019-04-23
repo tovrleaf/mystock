@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import ReactDataGrid from 'react-data-grid';
-import {getStockData} from './lib/stock-api';
+import { getStockData } from './lib/stock-api';
 const keys = require('./lib/fields');
+const {
+  DraggableHeader: { DraggableContainer }
+} = require("react-data-grid-addons");
 
 
 class App extends Component {
@@ -29,7 +32,10 @@ class App extends Component {
       var cols = data['cols'].map((v) => {
         if (v['key'] === keys.SYMBOL) {
           v['frozen'] = true;
+        } else {
+          v['draggable'] = true;
         }
+
         if (v['key'] === keys.PERCENTAGE_OF_PORTFOLIO) {
           v['formatter'] = ProgressBarFormatter;
         }
@@ -60,16 +66,42 @@ class App extends Component {
       return { rows };
     });
   };
+
+  onHeaderDrop = (source, target) => {
+    const stateCopy = Object.assign({}, this.state);
+    const columnSourceIndex = this.state.columns.findIndex(
+      i => i.key === source
+    );
+    const columnTargetIndex = this.state.columns.findIndex(
+      i => i.key === target
+    );
+
+    stateCopy.columns.splice(
+      columnTargetIndex,
+      0,
+      stateCopy.columns.splice(columnSourceIndex, 1)[0]
+    );
+
+    const emptyColumns = Object.assign({}, this.state, { columns: [] });
+    this.setState(emptyColumns);
+
+    const reorderedColumns = Object.assign({}, this.state, {
+      columns: stateCopy.columns
+    });
+    this.setState(reorderedColumns);
+  };
   
   render() {
     return (
-      <ReactDataGrid
-        columns={this.state.columns}
-        rowGetter={i => this.state.rows[i]}
-        rowsCount={this.state.rows.length}
-        onGridRowsUpdated={this.onGridRowsUpdated}
-        enableCellSelect={true}
-      />
+      <DraggableContainer onHeaderDrop={this.onHeaderDrop}>
+        <ReactDataGrid
+          columns={this.state.columns}
+          rowGetter={i => this.state.rows[i]}
+          rowsCount={this.state.rows.length}
+          onGridRowsUpdated={this.onGridRowsUpdated}
+          enableCellSelect={true}
+        />
+      </DraggableContainer>
     );
   }
 }
