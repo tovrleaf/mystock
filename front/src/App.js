@@ -32,6 +32,7 @@ class App extends Component {
       var cols = data['cols'].map((v) => {
         if (v['key'] === keys.SYMBOL) {
           v['frozen'] = true;
+          v['sortDescendingFirst'] = true;
         } else {
           v['draggable'] = true;
         }
@@ -44,6 +45,7 @@ class App extends Component {
 
       const defaultColumnProperties = {
         resizable: true,
+        sortable: true,
         width: 70
       };
 
@@ -90,6 +92,20 @@ class App extends Component {
     });
     this.setState(reorderedColumns);
   };
+
+  handleGridSort = (sortColumn, sortDirection) => {     
+    const comparer = (a, b) => {
+      if (sortDirection === 'ASC') {
+          return (a[sortColumn]> b[sortColumn]) ? 1 : -1;
+        } else if (sortDirection === 'DESC') {
+          return (a[sortColumn]< b[sortColumn]) ? 1 : -1;
+        }
+    };
+
+    const rows = sortDirection === 'NONE' ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);
+
+    this.setState({rows});
+  };
   
   render() {
     return (
@@ -100,6 +116,7 @@ class App extends Component {
           rowsCount={this.state.rows.length}
           onGridRowsUpdated={this.onGridRowsUpdated}
           enableCellSelect={true}
+          onGridSort={this.handleGridSort}
         />
       </DraggableContainer>
     );
