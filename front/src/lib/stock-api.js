@@ -45,10 +45,19 @@ export async function getStockData() {
   }
 
   shares = addPercentageOfEachShareInPortfolio(shares);
+  var head = columns.map((r) => { return r['name']; })
+
+  var ret = retRows.map((r) => {
+    var t = {};
+    columns.forEach((item) => {
+      t[item['key']] = r[item['key']];
+    })
+    return t;
+  })
 
   return {
-    'cols': columns,
-    'rows': retRows
+    'headers': head,
+    'data': ret
   }
 }
 
