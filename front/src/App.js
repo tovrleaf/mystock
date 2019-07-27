@@ -8,12 +8,32 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
-    var percentRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+    function percentRenderer(instance, td, row, col, prop, value, cellProperties) {
       while (td.firstChild) {
         td.removeChild(td.firstChild);
       }
       if (! isNaN(value)) {
-        value += '%'
+        value = Math.round(value * 10) / 10;
+        if (('' + value).split('.').length == 1) {
+          value += '.0'
+        }
+        value += ' %'
+        td.classList.add('htRight');
+      }
+      var el = document.createTextNode(value)
+      td.appendChild(el)
+    };
+
+    function euroRenderer(instance, td, row, col, prop, value, cellProperties) {
+      while (td.firstChild) {
+        td.removeChild(td.firstChild);
+      }
+      if (! isNaN(value)) {
+        value = Math.round(value * 10) / 10;
+        if (('' + value).split('.').length == 1) {
+          value += '.0'
+        }
+        value += ' EUR'
         td.classList.add('htRight');
       }
       var el = document.createTextNode(value)
@@ -32,6 +52,19 @@ class App extends React.Component {
         case keys.EXPECTED_GROWTH_FROM_START:
         case keys.PERCENTAGE_OF_PORTFOLIO:
           o['renderer'] = percentRenderer
+          break;
+
+        case keys.MARKET_PRICE_EUR:
+        case keys.YIELD_EUR:
+        case keys.EXPECTED_GROWTH_EUR:
+        case keys.EXPECTED_MARKET_PRICE_EUR:
+        case keys.EXPECTED_WIN_EUR:
+        case keys.MIDDLE_RATE:
+        case keys.PURCHASE_PRICE:
+        case keys.PRICE:
+        case keys.INDERES_TARGET_PRICE:
+        case keys.PURCHASE_PRICE_EUR:
+          o['renderer'] = euroRenderer
           break;
 
         default:

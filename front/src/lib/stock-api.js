@@ -5,15 +5,15 @@ export async function getStockData() {
   var header = {
     [keys.SYMBOL]: 'Nimi',
     [keys.INDERES_INSTRUCTION]: 'Suositus',
-    [keys.YIELD]: 'Tuotto %',
+    [keys.YIELD]: 'Tuotto',
     [keys.DIVIDEND_YIELD]: 'Osinkotuotto',
-    [keys.POTENTIAL]: 'Potentiaali %',
-    [keys.MARKET_PRICE_EUR]: 'Markkina-arvo EUR',
-    [keys.YIELD_EUR]: 'Tuotto EUR',
-    [keys.EXPECTED_GROWTH_EUR]: 'Kasvu  EUR (odotus)',
-    [keys.EXPECTED_MARKET_PRICE_EUR]: 'Markkina-arvo EUR (odotus)',
-    [keys.EXPECTED_WIN_EUR]: 'Voitto EUR (odotus)',
-    [keys.EXPECTED_GROWTH_FROM_START]: 'Kasvu % alusta (odotus)',
+    [keys.POTENTIAL]: 'Potentiaali',
+    [keys.MARKET_PRICE_EUR]: 'Markkina-arvo',
+    [keys.YIELD_EUR]: 'Tuotto',
+    [keys.EXPECTED_GROWTH_EUR]: 'Kasvu (odotus)',
+    [keys.EXPECTED_MARKET_PRICE_EUR]: 'Markkina-arvo (odotus)',
+    [keys.EXPECTED_WIN_EUR]: 'Voitto (odotus)',
+    [keys.EXPECTED_GROWTH_FROM_START]: 'Kasvu alusta (odotus)',
     [keys.AMOUNT_OF_STOCK]: 'Määrä',
     [keys.MIDDLE_RATE]: 'Keskikurssi',
     [keys.PURCHASE_PRICE]: 'Hankintahinta',
@@ -24,7 +24,7 @@ export async function getStockData() {
     [keys.PRICE_TO_SALES]: 'P/S',
     [keys.PRICE_TO_BOOK]: 'P/B',
     [keys.PRICE_TO_MARKET_LOCAL]: 'Markkina-arvo paikallinen',
-    [keys.PURCHASE_PRICE_EUR]: 'Hankintahinta EUR',
+    [keys.PURCHASE_PRICE_EUR]: 'Hankintahinta',
     [keys.PERCENTAGE_OF_PORTFOLIO]: 'Osuus osakesalkusta'
   };
 
