@@ -1,124 +1,84 @@
-import React, { Component } from 'react';
-import { ProgressBar } from 'react-bootstrap';
-import ReactDataGrid from 'react-data-grid';
+import './App.css'
+import React from 'react';
+import { HotTable } from '@handsontable/react';
 import { getStockData } from './lib/stock-api';
 const keys = require('./lib/fields');
-const {
-  DraggableHeader: { DraggableContainer }
-} = require("react-data-grid-addons");
 
-
-class App extends Component {
-
+class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      columns: [],
-      rows: [],
-      isLoading: false
+    var percentRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+      while (td.firstChild) {
+        td.removeChild(td.firstChild);
+      }
+      if (! isNaN(value)) {
+        value += '%'
+        td.classList.add('htRight');
+      }
+      var el = document.createTextNode(value)
+      td.appendChild(el)
     };
-  }
+
+    var cols = [];
+    for (var k in keys) {
+      var o = {data: keys[k]}
+
+      switch (keys[k]) {
+        // this should be /100
+        case keys.YIELD:
+        case keys.DIVIDEND_YIELD:
+        case keys.POTENTIAL:
+        case keys.EXPECTED_GROWTH_FROM_START:
+        case keys.PERCENTAGE_OF_PORTFOLIO:
+          o['renderer'] = percentRenderer
+          break;
+
+        default:
+          break;
+      }
+
+      cols.push(o)
+    }
+
+    this.state = {
+      headers: [],
+      data: [],
+      columns: cols,
+    }
+  };
 
   componentDidMount() {
-    this.setState({ isLoading: true });
-
-    var ProgressBarFormatter = ({ value }) => {
-      return <ProgressBar now={value} label={`${value}%`} />;
-    };
-
-    getStockData().then(data => {
-
-      var cols = data['cols'].map((v) => {
-        if (v['key'] === keys.SYMBOL) {
-          v['frozen'] = true;
-          v['sortDescendingFirst'] = true;
-        } else {
-          v['draggable'] = true;
-        }
-
-        if (v['key'] === keys.PERCENTAGE_OF_PORTFOLIO) {
-          v['formatter'] = ProgressBarFormatter;
-        }
-        return v;
-      });
-
-      const defaultColumnProperties = {
-        resizable: true,
-        sortable: true,
-        width: 70
-      };
-
-      cols = cols.map(c => ({ ...c, ...defaultColumnProperties }));
+    getStockData().then(body => {
 
       this.setState({
-        columns: cols,
-        rows: data['rows'],
-        isLoading: false
+        headers: body['headers'],
+        data: body['data']
       })
-    });
-  };
-  
-  onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
-    this.setState(state => {
-      const rows = state.rows.slice();
-      for (let i = fromRow; i <= toRow; i++) {
-        rows[i] = { ...rows[i], ...updated };
-      }
-      return { rows };
-    });
+    })
   };
 
-  onHeaderDrop = (source, target) => {
-    const stateCopy = Object.assign({}, this.state);
-    const columnSourceIndex = this.state.columns.findIndex(
-      i => i.key === source
-    );
-    const columnTargetIndex = this.state.columns.findIndex(
-      i => i.key === target
-    );
-
-    stateCopy.columns.splice(
-      columnTargetIndex,
-      0,
-      stateCopy.columns.splice(columnSourceIndex, 1)[0]
-    );
-
-    const emptyColumns = Object.assign({}, this.state, { columns: [] });
-    this.setState(emptyColumns);
-
-    const reorderedColumns = Object.assign({}, this.state, {
-      columns: stateCopy.columns
-    });
-    this.setState(reorderedColumns);
-  };
-
-  handleGridSort = (sortColumn, sortDirection) => {     
-    const comparer = (a, b) => {
-      if (sortDirection === 'ASC') {
-          return (a[sortColumn]> b[sortColumn]) ? 1 : -1;
-        } else if (sortDirection === 'DESC') {
-          return (a[sortColumn]< b[sortColumn]) ? 1 : -1;
-        }
-    };
-
-    const rows = sortDirection === 'NONE' ? this.state.originalRows.slice(0) : this.state.rows.sort(comparer);
-
-    this.setState({rows});
-  };
-  
   render() {
     return (
-      <DraggableContainer onHeaderDrop={this.onHeaderDrop}>
-        <ReactDataGrid
+      <div>
+        <HotTable
+          id="hot"
+          data={this.state.data}
+          colHeaders={this.state.headers}
           columns={this.state.columns}
-          rowGetter={i => this.state.rows[i]}
-          rowsCount={this.state.rows.length}
-          onGridRowsUpdated={this.onGridRowsUpdated}
-          enableCellSelect={true}
-          onGridSort={this.handleGridSort}
-        />
-      </DraggableContainer>
+          rowHeaders={true}
+          dropdownMenu={true}
+          filters={true}
+          fixedColumnsLeft={1}
+          manualColumnResize={true}
+          manualColumnMove={true}
+          manualRowMove={true}
+          contextMenu={true}
+          manualColumnFreeze={true}
+          columnSorting={true}
+          licenseKey='non-commercial-and-evaluation'
+          />
+      </div>
     );
   }
 }
