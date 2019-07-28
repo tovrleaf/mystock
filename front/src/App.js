@@ -119,6 +119,7 @@ class App extends React.Component {
           o['numericFormat'] = {
             mantissa: '0'
           }
+          break;
 
         default:
           break;

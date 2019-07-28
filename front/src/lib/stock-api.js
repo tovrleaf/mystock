@@ -40,6 +40,7 @@ export async function getStockData() {
   }
   var retRows = [];
   var shares = rows['shares'];
+
   for (var k in shares) {
     retRows.push(addFrontendFields(shares[k], rows['currencies']));
   }
@@ -54,6 +55,20 @@ export async function getStockData() {
     })
     return t;
   })
+
+  // sort by symbol
+  function cmp(a, b) {
+    var s1 = a['symbol'];
+    var s2 = b['symbol'];
+    if (s1 > s2) {
+      return 1;
+    }
+    if (s1 < s2) {
+      return -1;
+    }
+    return 0;
+  }
+  ret.sort(cmp);
 
   return {
     'headers': head,
