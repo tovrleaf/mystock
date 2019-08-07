@@ -3,7 +3,6 @@ import React from 'react';
 import { HotTable } from '@handsontable/react';
 import { getStockData } from './lib/stock-api';
 import { getColumns, getCells } from './lib/front-format';
-const keys = require('./lib/fields');
 
 class App extends React.Component {
   constructor(props) {
@@ -19,19 +18,25 @@ class App extends React.Component {
     }
   };
 
+
   componentDidMount() {
     getStockData().then(body => {
 
       var data = body['data'];
       var cells = getCells(Object.keys(data[0]));
+      var nestedHeaders = [
+        body['headers']
+      ];
 
       this.setState({
-        headers: body['headers'],
+        headers: true,
         data: data,
-        cell: cells
+        cell: cells,
+        nestedHeaders: nestedHeaders,
       })
-    })
+    });
   };
+
 
   render() {
     return (
@@ -42,6 +47,7 @@ class App extends React.Component {
           colHeaders={this.state.headers}
           columns={this.state.columns}
           cell={this.state.cell}
+          nestedHeaders={this.state.nestedHeaders}
           rowHeaders={true}
           dropdownMenu={true}
           filters={true}
@@ -53,6 +59,7 @@ class App extends React.Component {
           manualColumnFreeze={true}
           columnSorting={true}
           comments={true}
+          //autoColumnSizeObject={true}
           licenseKey='non-commercial-and-evaluation'
           />
       </div>
