@@ -1,3 +1,9 @@
 * {
   font-size: 0.98em;
 }
+.expectedGrowth {
+  background:#EFEFEF !important;
+}
+.manualInput {
+  background: #E8F0FE !important;
+}
