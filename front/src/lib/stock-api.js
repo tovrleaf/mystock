@@ -1,32 +1,7 @@
+import { header, keys } from './fields';
 var config = require('../conf/api-secrets.json');
-const keys = require('./fields');
 
 export async function getStockData() {
-  var header = {
-    [keys.SYMBOL]: 'Nimi',
-    [keys.INDERES_INSTRUCTION]: 'Suositus',
-    [keys.INDERES_TARGET_PRICE]: 'Tavoitehinta',
-    [keys.YIELD]: 'Tuotto',
-    [keys.DIVIDEND_YIELD]: 'Osinkotuotto',
-    [keys.POTENTIAL]: 'Potentiaali',
-    [keys.MARKET_PRICE_EUR]: 'Markkina-arvo',
-    [keys.YIELD_EUR]: 'Tuotto',
-    [keys.EXPECTED_GROWTH_EUR]: 'Kasvu',
-    [keys.EXPECTED_MARKET_PRICE_EUR]: 'Markkina-arvo',
-    [keys.EXPECTED_WIN_EUR]: 'Voitto',
-    [keys.EXPECTED_GROWTH_FROM_START]: 'Kasvu alusta',
-    [keys.AMOUNT_OF_STOCK]: 'Määrä',
-    [keys.MIDDLE_RATE]: 'Keskikurssi',
-    [keys.PURCHASE_PRICE]: 'Hankintahinta',
-    [keys.PRICE]: 'Kurssi',
-    [keys.RESULT_EQUITY]: 'Tulos/Oma Pääoma',
-    [keys.PRICE_TO_EARNINGS]: 'P/E',
-    [keys.PRICE_TO_SALES]: 'P/S',
-    [keys.PRICE_TO_BOOK]: 'P/B',
-    [keys.PRICE_TO_MARKET_LOCAL]: 'Markkina-arvo paikallinen',
-    [keys.PURCHASE_PRICE_EUR]: 'Hankintahinta',
-    [keys.PERCENTAGE_OF_PORTFOLIO]: 'Osuus osakesalkusta'
-  };
 
   const columns = Object.keys(header).map((k) => {
     return { key: k, name: header[k] };
@@ -107,19 +82,17 @@ function addFrontendFields(row, currencies) {
   var re = {'m': 'Myy', 'o': 'Osta', 'v': 'Vähennä', 'l': 'Lisää'};
   row[keys.INDERES_INSTRUCTION] = re[row[keys.INDERES_INSTRUCTION]] || '-';
 
-  row[keys.PRICE_TO_MARKET_LOCAL] = row[keys.AMOUNT_OF_STOCK] * row[keys.PRICE];
   var cur = 'EUR';
   if (row['currency']) {
     cur = row['currency'];
   }
-  row[keys.MARKET_PRICE_EUR] = row[keys.PRICE_TO_MARKET_LOCAL] / currencies[cur]['rate'];
 
-  row[keys.YIELD_EUR] = (row[keys.PRICE_TO_MARKET_LOCAL] - row[keys.PURCHASE_PRICE]) / currencies[cur]['rate'];
 
   row[keys.POTENTIAL] = (row[keys.INDERES_TARGET_PRICE] / row[keys.PRICE] - 1) * 100;
   if (isNaN(row[keys.POTENTIAL])) {
     row[keys.POTENTIAL] = '-';
   }
+
 
   row[keys.EXPECTED_GROWTH_EUR] = row[keys.MARKET_PRICE_EUR] * row[keys.POTENTIAL] / 100;
   if (isNaN(row[keys.EXPECTED_GROWTH_EUR])) {
@@ -136,7 +109,6 @@ function addFrontendFields(row, currencies) {
     row[keys.EXPECTED_WIN_EUR] = '-';
   }
 
-  row[keys.YIELD] = (row[keys.PRICE_TO_MARKET_LOCAL] / row[keys.PURCHASE_PRICE] - 1) * 100;
 
   row[keys.EXPECTED_GROWTH_FROM_START] = (row[keys.EXPECTED_MARKET_PRICE_EUR] - row[keys.PURCHASE_PRICE]) / 10;
   if (isNaN(row[keys.EXPECTED_GROWTH_FROM_START])) {
@@ -144,6 +116,11 @@ function addFrontendFields(row, currencies) {
   }
 
   row[keys.MIDDLE_RATE] = row[keys.PURCHASE_PRICE] / row[keys.AMOUNT_OF_STOCK];
+
+  row[keys.PRICE_TO_MARKET_LOCAL] = row[keys.AMOUNT_OF_STOCK] * row[keys.PRICE];
+  row[keys.MARKET_PRICE_EUR] = row[keys.PRICE_TO_MARKET_LOCAL] / currencies[cur]['rate'];
+  row[keys.YIELD_EUR] = (row[keys.PRICE_TO_MARKET_LOCAL] - row[keys.PURCHASE_PRICE]) / currencies[cur]['rate'];
+  row[keys.YIELD] = (row[keys.PRICE_TO_MARKET_LOCAL] / row[keys.PURCHASE_PRICE] - 1) * 100;
   row[keys.PURCHASE_PRICE_EUR] = row[keys.PRICE_TO_MARKET_LOCAL] / currencies[cur]['rate'];
 
   for (var k in row) {
@@ -151,6 +128,12 @@ function addFrontendFields(row, currencies) {
       row[k] = Number(row[k]).toFixed(2);
     }
   }
+
+  var localMArketValue = (Math.round(10 * row[keys.PRICE_TO_MARKET_LOCAL]) / 10);
+  if (('' + localMArketValue).split('.').length === 1) {
+    localMArketValue += '.0'
+  }
+  row[keys.PRICE_TO_MARKET_LOCAL] = localMArketValue + ' ' + cur;
 
   return row;
 }

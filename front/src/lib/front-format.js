@@ -1,5 +1,5 @@
 import { fieldRenderer } from './field-renderer';
-const keys = require('./fields');
+import { keys } from './fields';
 
 export function getColumns() {
     var cols = [];

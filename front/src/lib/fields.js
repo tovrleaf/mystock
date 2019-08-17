@@ -1,4 +1,4 @@
-module.exports = Object.freeze({
+export var keys = Object.freeze({
   SYMBOL: 'symbol',
   INDERES_INSTRUCTION: 'inderesInstruction',
   INDERES_TARGET_PRICE: 'inderesTargetPrice',
@@ -23,3 +23,29 @@ module.exports = Object.freeze({
   PURCHASE_PRICE_EUR: 'purchasePriceEur',
   PERCENTAGE_OF_PORTFOLIO: 'percentageOfPortfolio'
 });
+
+export var header = {
+  [keys.SYMBOL]: 'Nimi',
+  [keys.INDERES_INSTRUCTION]: 'Suositus',
+  [keys.INDERES_TARGET_PRICE]: 'Tavoitehinta',
+  [keys.YIELD]: 'Tuotto',
+  [keys.DIVIDEND_YIELD]: 'Osinkotuotto',
+  [keys.POTENTIAL]: 'Potentiaali',
+  [keys.MARKET_PRICE_EUR]: 'Markkina-arvo',
+  [keys.YIELD_EUR]: 'Tuotto',
+  [keys.EXPECTED_GROWTH_EUR]: 'Kasvu',
+  [keys.EXPECTED_MARKET_PRICE_EUR]: 'Markkina-arvo',
+  [keys.EXPECTED_WIN_EUR]: 'Voitto',
+  [keys.EXPECTED_GROWTH_FROM_START]: 'Kasvu alusta',
+  [keys.AMOUNT_OF_STOCK]: 'Määrä',
+  [keys.MIDDLE_RATE]: 'Keskikurssi',
+  [keys.PURCHASE_PRICE]: 'Hankintahinta',
+  [keys.PRICE]: 'Kurssi',
+  [keys.RESULT_EQUITY]: 'Tulos/Oma Pääoma',
+  [keys.PRICE_TO_EARNINGS]: 'P/E',
+  [keys.PRICE_TO_SALES]: 'P/S',
+  [keys.PRICE_TO_BOOK]: 'P/B',
+  [keys.PRICE_TO_MARKET_LOCAL]: 'Markkina-arvo paikallinen',
+  [keys.PURCHASE_PRICE_EUR]: 'Hankintahinta',
+  [keys.PERCENTAGE_OF_PORTFOLIO]: 'Osuus osakesalkusta'
+};

@@ -1,10 +1,9 @@
-const keys = require('./fields');
+import { keys } from './fields';
 
 export function fieldRenderer(key, config) {
   if (fields[key]) {
     config['renderer'] = addRenderer
   }
-
 
   return config;
 }
@@ -57,9 +56,9 @@ var fieldColors = {
   ],
   manualInputColumns: [
     keys.INDERES_INSTRUCTION,
+    keys.INDERES_TARGET_PRICE,
     keys.AMOUNT_OF_STOCK,
     keys.PURCHASE_PRICE,
-    keys.INDERES_TARGET_PRICE,
   ],
 };
 
