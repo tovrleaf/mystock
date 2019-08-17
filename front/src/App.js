@@ -18,8 +18,6 @@ class App extends React.Component {
     }
   };
 
-  // TODO PRICE_TO_MARKET_LOCAL
-
   componentDidMount() {
     getStockData().then(body => {
 

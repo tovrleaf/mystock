@@ -22,14 +22,25 @@ export async function getStockData() {
 
   shares = addPercentageOfEachShareInPortfolio(shares);
   var head = columns.map((r) => { return r['name']; })
+  var topHeadersConfig = [
+    ['', 1],
+    ['Inderes', 2],
+    ['', 5],
+    ['Odotus', 4],
+    ['Hankinta', 3],
+    ['', 1],
+    ['Tunnusluvut', 4],
+  ]
+  var topHeader = [];
+  var l = 0;
+  topHeadersConfig.forEach((i) => {
+    topHeader.push({ label: '<b>' + i[0] + '</b>', colspan: i[1] });
+    l += i[1];
+  });
+  topHeader.push({ label: '', colspan: head.length - l})
+
   head = [
-    [
-      '',
-      { label: '<b>Inderes</b>', colspan: 2 },
-      { label: '', colspan: 5 },
-      { label: '<b>Odotus</b>', colspan: 4 },
-      { label: '', colspan: 12 },
-    ],
+    topHeader,
     head,
   ];
 

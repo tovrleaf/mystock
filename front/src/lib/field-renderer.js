@@ -37,6 +37,10 @@ var fields = {
   [keys.INDERES_TARGET_PRICE]: [euroRenderer, renderColorColumn],
   [keys.PURCHASE_PRICE_EUR]: [euroRenderer],
   [keys.AMOUNT_OF_STOCK]: [renderColorColumn],
+  [keys.RESULT_EQUITY]: [renderColorColumn],
+  [keys.PRICE_TO_EARNINGS]: [renderColorColumn],
+  [keys.PRICE_TO_BOOK]: [renderColorColumn],
+  [keys.PRICE_TO_SALES]: [renderColorColumn],
 };
 
 var fieldColors = {
@@ -59,6 +63,12 @@ var fieldColors = {
     keys.INDERES_TARGET_PRICE,
     keys.AMOUNT_OF_STOCK,
     keys.PURCHASE_PRICE,
+  ],
+  keyFigures: [
+    keys.RESULT_EQUITY,
+    keys.PRICE_TO_EARNINGS,
+    keys.PRICE_TO_BOOK,
+    keys.PRICE_TO_SALES,
   ],
 };
 
@@ -118,6 +128,10 @@ function renderColorColumn(instance, td, row, col, prop, value, cellProperties) 
 
   if (fieldColors.manualInputColumns.includes(prop)) {
     td.classList.add('manualInput')
+  }
+
+  if (fieldColors.keyFigures.includes(prop)) {
+    td.classList.add('keyFigures');
   }
 
   // special cases
