@@ -5,20 +5,20 @@ export async function getStockData() {
   var header = {
     [keys.SYMBOL]: 'Nimi',
     [keys.INDERES_INSTRUCTION]: 'Suositus',
+    [keys.INDERES_TARGET_PRICE]: 'Tavoitehinta',
     [keys.YIELD]: 'Tuotto',
     [keys.DIVIDEND_YIELD]: 'Osinkotuotto',
     [keys.POTENTIAL]: 'Potentiaali',
     [keys.MARKET_PRICE_EUR]: 'Markkina-arvo',
     [keys.YIELD_EUR]: 'Tuotto',
-    [keys.EXPECTED_GROWTH_EUR]: 'Kasvu (odotus)',
-    [keys.EXPECTED_MARKET_PRICE_EUR]: 'Markkina-arvo (odotus)',
-    [keys.EXPECTED_WIN_EUR]: 'Voitto (odotus)',
-    [keys.EXPECTED_GROWTH_FROM_START]: 'Kasvu alusta (odotus)',
+    [keys.EXPECTED_GROWTH_EUR]: 'Kasvu',
+    [keys.EXPECTED_MARKET_PRICE_EUR]: 'Markkina-arvo',
+    [keys.EXPECTED_WIN_EUR]: 'Voitto',
+    [keys.EXPECTED_GROWTH_FROM_START]: 'Kasvu alusta',
     [keys.AMOUNT_OF_STOCK]: 'Määrä',
     [keys.MIDDLE_RATE]: 'Keskikurssi',
     [keys.PURCHASE_PRICE]: 'Hankintahinta',
     [keys.PRICE]: 'Kurssi',
-    [keys.INDERES_TARGET_PRICE]: 'Inderes tavoitehinta',
     [keys.RESULT_EQUITY]: 'Tulos/Oma Pääoma',
     [keys.PRICE_TO_EARNINGS]: 'P/E',
     [keys.PRICE_TO_SALES]: 'P/S',
@@ -47,6 +47,16 @@ export async function getStockData() {
 
   shares = addPercentageOfEachShareInPortfolio(shares);
   var head = columns.map((r) => { return r['name']; })
+  head = [
+    [
+      '',
+      { label: '<b>Inderes</b>', colspan: 2 },
+      { label: '', colspan: 5 },
+      { label: '<b>Odotus</b>', colspan: 4 },
+      { label: '', colspan: 12 },
+    ],
+    head,
+  ];
 
   var ret = retRows.map((r) => {
     var t = {};

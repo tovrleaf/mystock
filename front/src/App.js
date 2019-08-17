@@ -11,22 +11,21 @@ class App extends React.Component {
     var cols = getColumns();
 
     this.state = {
-      headers: [],
+      headers: true,
       data: [],
       columns: cols,
       cell: []
     }
   };
 
+  // TODO PRICE_TO_MARKET_LOCAL
 
   componentDidMount() {
     getStockData().then(body => {
 
       var data = body['data'];
       var cells = getCells(Object.keys(data[0]));
-      var nestedHeaders = [
-        body['headers']
-      ];
+      var nestedHeaders = body['headers'];
 
       this.setState({
         headers: true,
@@ -60,6 +59,8 @@ class App extends React.Component {
           columnSorting={true}
           comments={true}
           //autoColumnSizeObject={true}
+          collapsibleColumns={true}
+          hiddenColumns={true}
           licenseKey='non-commercial-and-evaluation'
           />
       </div>
