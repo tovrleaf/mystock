@@ -123,11 +123,11 @@ function renderColorColumn(instance, td, row, col, prop, value, cellProperties) 
   }
 
   if (fieldColors.expectedGrowthColumns.includes(prop)) {
-    td.classList.add('expectedGrowth')
+    td.classList.add('expectedGrowth');
   }
 
   if (fieldColors.manualInputColumns.includes(prop)) {
-    td.classList.add('manualInput')
+    td.classList.add('manualInput');
   }
 
   if (fieldColors.keyFigures.includes(prop)) {

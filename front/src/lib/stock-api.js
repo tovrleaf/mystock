@@ -104,6 +104,8 @@ function addFrontendFields(row, currencies) {
     row[keys.POTENTIAL] = '-';
   }
 
+  row[keys.PRICE_TO_MARKET_LOCAL] = row[keys.AMOUNT_OF_STOCK] * row[keys.PRICE];
+  row[keys.MARKET_PRICE_EUR] = row[keys.PRICE_TO_MARKET_LOCAL] / currencies[cur]['rate'];
 
   row[keys.EXPECTED_GROWTH_EUR] = row[keys.MARKET_PRICE_EUR] * row[keys.POTENTIAL] / 100;
   if (isNaN(row[keys.EXPECTED_GROWTH_EUR])) {
@@ -128,8 +130,6 @@ function addFrontendFields(row, currencies) {
 
   row[keys.MIDDLE_RATE] = row[keys.PURCHASE_PRICE] / row[keys.AMOUNT_OF_STOCK];
 
-  row[keys.PRICE_TO_MARKET_LOCAL] = row[keys.AMOUNT_OF_STOCK] * row[keys.PRICE];
-  row[keys.MARKET_PRICE_EUR] = row[keys.PRICE_TO_MARKET_LOCAL] / currencies[cur]['rate'];
   row[keys.YIELD_EUR] = (row[keys.PRICE_TO_MARKET_LOCAL] - row[keys.PURCHASE_PRICE]) / currencies[cur]['rate'];
   row[keys.YIELD] = (row[keys.PRICE_TO_MARKET_LOCAL] / row[keys.PURCHASE_PRICE] - 1) * 100;
   row[keys.PURCHASE_PRICE_EUR] = row[keys.PRICE_TO_MARKET_LOCAL] / currencies[cur]['rate'];
@@ -145,6 +145,9 @@ function addFrontendFields(row, currencies) {
     localMArketValue += '.0'
   }
   row[keys.PRICE_TO_MARKET_LOCAL] = localMArketValue + ' ' + cur;
+
+  // @TODO calculate
+  row[keys.RESULT_EQUITY] = '';
 
   return row;
 }
