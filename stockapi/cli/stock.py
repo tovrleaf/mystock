@@ -43,6 +43,12 @@ def populate_share_values(symbol):
         click.secho(str(e), fg='red')
         sys.exit(128)
 
+    # populate empty keys
+    for k in ['inderesInstruction', 'amountOfStocks', 'inderesTargetPrice',
+              'purchasePrice']:
+        if k not in share:
+            share[k] = ''
+
     click.echo('Enter values for share %s' % symbol)
     instruction = click.prompt(
         'Ohjeistus - O(sta), L(isaa), V(ahenna), M(yy), -',
