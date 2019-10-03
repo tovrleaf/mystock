@@ -3,7 +3,6 @@ import React from 'react';
 import { HotTable } from '@handsontable/react';
 import { getStockData } from './lib/stock-api';
 import { getColumns, getCells } from './lib/front-format';
-import Handsontable from 'handsontable';
 
 class App extends React.Component {
   constructor(props) {
