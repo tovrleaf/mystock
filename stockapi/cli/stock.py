@@ -64,8 +64,8 @@ def populate_share_values(symbol):
 
     amount = click.prompt('Maara', type=int, default=share['amountOfStocks'])
 
-    target_price = click.prompt('Tavoitehinta',
-                                default=share['inderesTargetPrice'])
+    target_price = str(click.prompt('Tavoitehinta',
+                                    default=share['inderesTargetPrice']))
     match = re.match(r'^(\d+(\.\d+)?|-)$', target_price)
     if not match:
         click.secho('Target price needs to be numberic or -', fg='red')
