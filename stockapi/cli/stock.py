@@ -45,7 +45,7 @@ def populate_share_values(symbol):
 
     # populate empty keys
     for k in ['inderesInstruction', 'amountOfStocks', 'inderesTargetPrice',
-              'purchasePrice']:
+              'purchasePrice', 'currency']:
         if k not in share:
             share[k] = ''
 
@@ -64,18 +64,18 @@ def populate_share_values(symbol):
 
     amount = click.prompt('Maara', type=int, default=share['amountOfStocks'])
 
-    target_price = str(click.prompt('Tavoitehinta',
+    purchase_price = click.prompt('Hankinta-arvo (EUR)',
+                                  type=float,
+                                  default=share['purchasePrice'])
+
+    currency = click.prompt('Valuutta', default=share['currency'])
+
+    target_price = str(click.prompt('Tavoitehinta (%s)' % currency,
                                     default=share['inderesTargetPrice']))
     match = re.match(r'^(\d+(\.\d+)?|-)$', target_price)
     if not match:
         click.secho('Target price needs to be numberic or -', fg='red')
         sys.exit(128)
-
-    purchase_price = click.prompt('Hankinta-arvo',
-                                  type=float,
-                                  default=share['purchasePrice'])
-
-    currency = click.prompt('Valuutta', default='EUR')
 
     service.update_inderes(symbol, instruction, amount,
                            target_price, purchase_price, currency)
