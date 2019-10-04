@@ -98,7 +98,6 @@ function addFrontendFields(row, currencies) {
     cur = row['currency'];
   }
 
-
   row[keys.POTENTIAL] = (row[keys.INDERES_TARGET_PRICE] / row[keys.PRICE] - 1) * 100;
   if (isNaN(row[keys.POTENTIAL])) {
     row[keys.POTENTIAL] = '-';
@@ -117,7 +116,7 @@ function addFrontendFields(row, currencies) {
     row[keys.EXPECTED_MARKET_PRICE_EUR] = '-';
   }
 
-  row[keys.EXPECTED_WIN_EUR] = row[keys.EXPECTED_MARKET_PRICE_EUR] - (row[keys.PURCHASE_PRICE] / currencies[cur]['rate']);
+  row[keys.EXPECTED_WIN_EUR] = row[keys.EXPECTED_MARKET_PRICE_EUR] - row[keys.PURCHASE_PRICE];
   if (isNaN(row[keys.EXPECTED_WIN_EUR])) {
     row[keys.EXPECTED_WIN_EUR] = '-';
   }
@@ -130,8 +129,8 @@ function addFrontendFields(row, currencies) {
 
   row[keys.MIDDLE_RATE] = row[keys.PURCHASE_PRICE] / row[keys.AMOUNT_OF_STOCK];
 
-  row[keys.YIELD_EUR] = (row[keys.PRICE_TO_MARKET_LOCAL] - row[keys.PURCHASE_PRICE]) / currencies[cur]['rate'];
-  row[keys.YIELD] = (row[keys.PRICE_TO_MARKET_LOCAL] / row[keys.PURCHASE_PRICE] - 1) * 100;
+  row[keys.YIELD_EUR] = row[keys.MARKET_PRICE_EUR] - row[keys.PURCHASE_PRICE];
+  row[keys.YIELD] = (row[keys.MARKET_PRICE_EUR] / row[keys.PURCHASE_PRICE] - 1) * 100;
   row[keys.PURCHASE_PRICE_EUR] = row[keys.PRICE_TO_MARKET_LOCAL] / currencies[cur]['rate'];
 
   for (var k in row) {
@@ -140,11 +139,11 @@ function addFrontendFields(row, currencies) {
     }
   }
 
-  var localMArketValue = (Math.round(10 * row[keys.PRICE_TO_MARKET_LOCAL]) / 10);
-  if (('' + localMArketValue).split('.').length === 1) {
-    localMArketValue += '.0'
+  var localMarketValue = (Math.round(10 * row[keys.PRICE_TO_MARKET_LOCAL]) / 10);
+  if (('' + localMarketValue).split('.').length === 1) {
+    localMarketValue += '.0'
   }
-  row[keys.PRICE_TO_MARKET_LOCAL] = localMArketValue + ' ' + cur;
+  row[keys.PRICE_TO_MARKET_LOCAL] = localMarketValue + ' ' + cur;
 
   // @TODO calculate
   row[keys.RESULT_EQUITY] = '';
