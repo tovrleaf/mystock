@@ -1,4 +1,4 @@
-import { keys } from './fields';
+import { header, keys } from './fields';
 
 export function fieldRenderer(key, config) {
   if (fields[key]) {
@@ -107,7 +107,13 @@ function percentRenderer(instance, td, row, col, prop, value, cellProperties) {
 };
 
 function euroRenderer(instance, td, row, col, prop, value, cellProperties) {
-  formatTd(td, prop, value, 'EUR');
+  // prop == key name
+  var cur = 'EUR';
+  if ([keys.PRICE, keys.INDERES_TARGET_PRICE].includes(prop)) {
+    var localMarketArrayIndex = Object.keys(header).findIndex(element => element === keys.PRICE_TO_MARKET_LOCAL);
+    cur = cellProperties.instance.getData()[row][localMarketArrayIndex].split(' ')[1]
+  }
+  formatTd(td, prop, value, cur);
 };
 
 function renderColorColumn(instance, td, row, col, prop, value, cellProperties) {
